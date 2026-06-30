@@ -9,7 +9,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - run: |
-          git remote add upstream https://github.com/original/repo.git
+          git remote add upstream https://github.com/codenotary/immudb.git
           git fetch upstream
           git rebase upstream/main
           git push --force-with-lease

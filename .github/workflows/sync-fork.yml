@@ -9,7 +9,14 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - run: |
+          set -euo pipefail
           git remote add upstream https://github.com/codenotary/immudb.git
-          git fetch upstream
-          git rebase upstream/main
-          git push --force-with-lease
+          git fetch upstream --prune
+
+          # Resolve upstream default branch (e.g. master/main)
+          UPSTREAM_DEFAULT_BRANCH="$(git remote show upstream | sed -n '/HEAD branch/s/.*: //p')"
+          echo "Upstream default branch: ${UPSTREAM_DEFAULT_BRANCH}"
+
+          git checkout "${GITHUB_REF_NAME}"
+          git rebase "upstream/${UPSTREAM_DEFAULT_BRANCH}"
+          git push --force-with-lease origin "${GITHUB_REF_NAME}"
